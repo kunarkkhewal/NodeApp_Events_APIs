@@ -7,6 +7,12 @@ const errorMessage = (message) => {
     if (message.includes(`Event Doesn't Exist`)) {
         return `Event Doesn't Exist`
     }
+    if (message.includes(`Start time already passed`)) {
+        return `Start time already passed`
+    }
+    if (message.includes(`Event Duration Cannot be 0`)) {
+        return `Event Duration Cannot be 0`
+    }
     if (message.includes(`Event Already Present`)) {
         return 'Event Already Present'
     }
@@ -65,7 +71,17 @@ const createEvent = async (data) => {
         if (isSameEventNameExist) {
             throw { message: 'Event Already Present' };
         }
+
+        let currentTime = moment().format('YYYY-MM-DD hh:mm:ss A');
         data.eventstartingtime = formatTimeinAMPM(data.eventstartingtime);
+
+        if (data.eventstartingtime < currentTime) {
+            throw { message: `Start time already passed` };
+        }
+
+        if (moment().add(data.eventduration).format('YYYY-MM-DD hh:mm:ss A') == moment().format('YYYY-MM-DD hh:mm:ss A')) {
+            throw { message: `Event Duration Cannot be 0` };
+        }
         const response = await db.Event.create(data);
         if (!response) {
             throw { message: 'Error Creating Event' }
@@ -139,7 +155,7 @@ const updateEvent = async (data) => {
             const updateQuery = {};
             if (data.eventname) {
                 if (record.eventname != data.eventname) {
-                    const isSameEventNameExist = isEventNameExist(data.eventname);
+                    const isSameEventNameExist = await isEventNameExist(data.eventname);
                     if (isSameEventNameExist) {
                         throw { message: 'Event Name Already Present' };
                     }
@@ -158,7 +174,13 @@ const updateEvent = async (data) => {
                 updateQuery.eventstartingtime = data.eventstartingtime;
             }
 
-            if (data.eventduration) updateQuery.eventduration = data.eventduration;
+            if (data.eventduration) {
+                if (moment().add(data.eventduration).format('YYYY-MM-DD hh:mm:ss A') == moment().format('YYYY-MM-DD hh:mm:ss A')) {
+                    throw { message: `Event Duration Cannot be 0` };
+                }
+
+                updateQuery.eventduration = data.eventduration;
+            }
 
             updateQuery.updatedAt = moment().format('YYYY-MM-DD hh:mm:ss A');
             
