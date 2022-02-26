@@ -14,18 +14,22 @@
 
 ## CREATE API
 need 3 field with following format
-"eventname": "Test",
-"eventstartingtime": "2022-02-27 07:50:00 PM",
-"eventduration": "01:00:00"
+{
+    "eventname": "Test",
+    "eventstartingtime": "2022-02-27 07:50:00 PM",
+    "eventduration": "01:00:00"
+}
 
 can create Event in the live range, that 10 minutes from now
 
 ## UPDATE API
 need following fields with formats
-"id": 14,
-"eventname": "Test14",
-"eventstartingtime": "2022-02-25 07:59:00 PM",
-"eventduration": "00:00:00"
+{
+    "id": 14,
+    "eventname": "Test14",
+    "eventstartingtime": "2022-02-25 07:59:00 PM",
+    "eventduration": "00:00:00"
+}
 
 
 # Curl Requests
