@@ -3,6 +3,6 @@ const app = express();
 
 const eventRoute = require('./eventRoute');
 
-app.use('/events', eventRoute)
+app.use('/', eventRoute)
 
 module.exports = app;

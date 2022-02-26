@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../utils/db_connection');
+const db = {};
 
 const Event = sequelize.define('events', {
     // attributes
@@ -12,11 +13,18 @@ const Event = sequelize.define('events', {
         allowNull: false
     },
     eventduration: {
-        type: Sequelize.STRING, //to see this
+        type: Sequelize.TIME,
         allowNull: false
     }
 }, {
     // options
 });
 
-module.exports = Event;
+db.Event = Event;
+
+// Event.sync({ force: true }); //For Forceful Remove and Create Table
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+module.exports = db;
