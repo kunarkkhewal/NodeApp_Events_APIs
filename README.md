@@ -1,5 +1,7 @@
 # NodeApp_EventAPIs
 
+### To Run Server: nodemon index.js 
+
 ## ROUTES
 ### GET 
 / (get events information)
