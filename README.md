@@ -1,15 +1,18 @@
 # NodeApp_EventAPIs
 
-ROUTES
-GET / (get events information)
-POST /add (create Event)
-PUT update (event Add, need to give data in body)
+## ROUTES
+### GET 
+/ (get events information)
+### POST 
+/add
+### PUT 
+/update
 
-Cases:
-##GET API
+## Cases:
+## GET API
 3 object liveEvents, upcomingEvents, pastEvents will retured with approprite events
 
-##CREATE API
+## CREATE API
 need 3 field with following format
 "eventname": "Test",
 "eventstartingtime": "2022-02-27 07:50:00 PM",
@@ -25,11 +28,11 @@ need following fields with formats
 "eventduration": "00:00:00"
 
 
-#Curl Requests
-##GET API
+# Curl Requests
+## GET API
 curl --location --request GET 'localhost:5000/'
 
-##CREATE API
+## CREATE API
 curl --location --request POST 'localhost:5000/add' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -38,7 +41,7 @@ curl --location --request POST 'localhost:5000/add' \
     "eventduration": "01:00:00"
 }'
 
-##UPDATE API
+## UPDATE API
 curl --location --request PUT 'localhost:5000/update' \
 --header 'Content-Type: application/json' \
 --data-raw '{
