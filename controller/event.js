@@ -81,7 +81,7 @@ const createEvent = async (data) => {
         }
 
         let currentTime = moment().format('YYYY-MM-DD hh:mm:ss A');
-        data.eventstartingtime = formatTimeinAMPM(data.eventstartingtime);
+        // data.eventstartingtime = formatTimeinAMPM(data.eventstartingtime);
 
         if (data.eventstartingtime < currentTime) {
             throw { message: `Start time already passed` };
@@ -97,7 +97,7 @@ const createEvent = async (data) => {
         // response.eventstartingtime = formatTimeinAMPM(response.eventstartingtime);
         // response.createdAt = formatTimeinAMPM(response.createdAt);
         // response.updatedAt = formatTimeinAMPM(response.updatedAt);
-        const latestID = events[events.length - 1].id;
+        const latestID = events && events.length && events[events.length - 1].id;
         events.push({id:latestID+1, ...data});
 
         return data;
