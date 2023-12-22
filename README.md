@@ -2,7 +2,9 @@
 
 ### To Run Server: nodemon index.js 
 
-## ROUTES
+### use this for API docs: http://localhost:5000/api-docs/
+
+## ROUTES, Above link is Swagger doc of same
 ### GET 
 / (get events information)
 ### POST 
