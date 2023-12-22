@@ -48,14 +48,22 @@ const formatTimeinAMPM = (date) => {
     return moment(date).format('YYYY-MM-DD hh:mm:ss A');
 }
 
+const events = [];
+
 const isEventNameExist = async (name) => {
     try {
-        const isEventNameExist = await db.Event.findOne({
-            where: {
-                eventname: name
+        // const isEventNameExist = await db.Event.findOne({
+        //     where: {
+        //         eventname: name
+        //     }
+        // });
+        const isEventNameExist = false;
+        events.forEach(event => {
+            if (event.eventname === name) {
+                isEventNameExist = true;
             }
-        });
-        return isEventNameExist
+        })
+        return isEventNameExist;
     } catch (error) {
         throw {
             error: {
@@ -82,15 +90,17 @@ const createEvent = async (data) => {
         if (moment().add(data.eventduration).format('YYYY-MM-DD hh:mm:ss A') == moment().format('YYYY-MM-DD hh:mm:ss A')) {
             throw { message: `Event Duration Cannot be 0` };
         }
-        const response = await db.Event.create(data);
-        if (!response) {
-            throw { message: 'Error Creating Event' }
-        }
-        response.eventstartingtime = formatTimeinAMPM(response.eventstartingtime);
-        response.createdAt = formatTimeinAMPM(response.createdAt);
-        response.updatedAt = formatTimeinAMPM(response.updatedAt);
+        // const response = await db.Event.create(data);
+        // if (!response) {
+        //     throw { message: 'Error Creating Event' }
+        // }
+        // response.eventstartingtime = formatTimeinAMPM(response.eventstartingtime);
+        // response.createdAt = formatTimeinAMPM(response.createdAt);
+        // response.updatedAt = formatTimeinAMPM(response.updatedAt);
+        const latestID = events[events.length - 1].id;
+        events.push({id:latestID+1, ...data});
 
-        return response;
+        return data;
     } catch (error) {
         throw {
             error: {
@@ -102,10 +112,10 @@ const createEvent = async (data) => {
 
 const findAll = async () => {
     try {
-        const response = await db.Event.findAll({ raw: true });
-        if (!response) throw { message: `No Events Present` };
+        // const response = await db.Event.findAll({ raw: true });
+        if (!events) throw { message: `No Events Present` };
         const liveEvents = [], upcomingEvents = [], pastEvents = [];
-        response.forEach(event => {
+        events.forEach(event => {
             let currentTime = moment().format('YYYY-MM-DD hh:mm:ss A');
             let timein10mins = moment().add(10, 'minutes').format('YYYY-MM-DD hh:mm:ss A');
             let eventEndTime = moment(event.eventstartingtime).add(event.eventduration).format('YYYY-MM-DD hh:mm:ss A');
@@ -138,12 +148,18 @@ const updateEvent = async (data) => {
         if (!data.id) {
             throw { message: `Please Provide Event Id` };
         }
-        const record = await db.Event.findOne({
-            where: {
-                id: data.id
-            },
-            raw: true
-        });
+        // const record = await db.Event.findOne({
+        //     where: {
+        //         id: data.id
+        //     },
+        //     raw: true
+        // });
+        let record;
+        events.forEach(event => {
+            if(event.id = data.id) {
+                record = event;
+            }
+        })
         if (!record) throw { message: `Event Doesn't Exist` };
         
         let currentTime = moment().format('YYYY-MM-DD hh:mm:ss A');
@@ -182,17 +198,23 @@ const updateEvent = async (data) => {
                 updateQuery.eventduration = data.eventduration;
             }
 
-            updateQuery.updatedAt = moment().format('YYYY-MM-DD hh:mm:ss A');
+            // updateQuery.updatedAt = moment().format('YYYY-MM-DD hh:mm:ss A');
             
-            const response = await db.Event.update(updateQuery, {
-                where: {
-                    id: data.id
-                },
-                returning: true,
-                plain: true
-            });
+            // const response = await db.Event.update(updateQuery, {
+            //     where: {
+            //         id: data.id
+            //     },
+            //     returning: true,
+            //     plain: true
+            // });
 
-            if (!response) throw { message: `Unable to update` };
+            events.forEach(event => {
+                if(event.id = data.id) {
+                    event = {...event, ...updateQuery};
+                }
+            })
+
+            // if (!response) throw { message: `Unable to update` };
 
             return { message: 'Updated Successfully' };
         } else if ((record.eventstartingtime < timein10mins && record.eventstartingtime > currentTime) || (eventEndTime > currentTime) || (record.eventstartingtime < currentTime)) {
